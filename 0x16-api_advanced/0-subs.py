@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 """A function to query the number of subscribers on a given Reddit subreddit."""
-import requests
+from requests import request
 
 
 def number_of_subscribers(subreddit):
-    """Returning  the total number of subscribers on a given subreddit."""
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
-    }
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    if response.status_code == 404:
+    """A function that queries the Reddit API and returns the number
+    of subscribers"""
+    url = "https://api.reddit.com/r/{}/about".format(subreddit)
+    headers = {"User-Agent": "Python3"}
+    response = request("GET", url, headers=headers).json()
+    try:
+        subscribers = response['data']['subscribers']
+        return subscribers
+    except Exception:
         return 0
-    results = response.json().get("data")
-    return results.get("subscribers")
